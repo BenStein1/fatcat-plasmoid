@@ -1,0 +1,27 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Id": "org.kde.plasma.fatcat",
+    "Name": "FatCat",
+    "Description": "RAM/GPU-driven Fat Cat animation",
+    "Icon": "utilities-system-monitor",
+    "Version": "1.0",
+    "License": "GPL-2.0-or-later",
+    "Authors": [
+      {
+        "Name": "Ben Conner",
+        "Email": "dev@connertechnical.com"
+      }
+    ],
+    "Category": "System",
+    "FormFactors": [
+      "desktop",
+      "tablet",
+      "handset"
+    ],
+    "EnabledByDefault": true
+  },
+  "X-Plasma-API-Minimum-Version": "6.0",
+  "X-Plasma-ConfigUI": "config/config.qml",
+  "X-Plasma-KConfigXT": "config/main.xml"
+}

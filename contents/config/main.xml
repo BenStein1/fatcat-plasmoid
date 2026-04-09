@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0">
+  <kcfgfile name="org.kde.plasma.fatcatrc"/>
+  <group name="General">
+    <entry name="metric" type="String">
+      <default>systemRam</default>
+    </entry>
+  </group>
+</kcfg>
