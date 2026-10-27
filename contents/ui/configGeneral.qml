@@ -5,9 +5,10 @@ import org.kde.kirigami as Kirigami
 Kirigami.FormLayout {
     id: page
 
-    // Plasma's configuration loader reads/writes cfg_metric. Avoid updating
-    // settings from ComboBox initialization, which is not a user selection.
+    // Plasma's config loader binds cfg_* values. Only user selections write
+    // them, so initialization cannot accidentally reset saved preferences.
     property string cfg_metric: "systemRam"
+    property string cfg_renderer: "ksvg"
 
     QQC2.ComboBox {
         id: metricCombo
@@ -21,6 +22,21 @@ Kirigami.FormLayout {
 
         onActivated: function(index) {
             page.cfg_metric = model[index].value
+        }
+    }
+
+    QQC2.ComboBox {
+        id: rendererCombo
+        Kirigami.FormData.label: i18n("Artwork renderer")
+        model: [
+            { text: i18n("KDE SVG (default)"), value: "ksvg" },
+            { text: i18n("Qt Quick Image (experimental)"), value: "image" }
+        ]
+        textRole: "text"
+        currentIndex: page.cfg_renderer === "image" ? 1 : 0
+
+        onActivated: function(index) {
+            page.cfg_renderer = model[index].value
         }
     }
 }
