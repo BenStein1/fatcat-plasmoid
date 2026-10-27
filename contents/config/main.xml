@@ -5,5 +5,8 @@
     <entry name="metric" type="String">
       <default>systemRam</default>
     </entry>
+    <entry name="renderer" type="String">
+      <default>ksvg</default>
+    </entry>
   </group>
 </kcfg>
