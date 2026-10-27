@@ -14,6 +14,8 @@ kpackagetool6 --type Plasma/Applet --upgrade .
 
 Add FatCat to the desktop or a panel. Open the widget's configuration and select **System RAM usage** or **GPU VRAM usage**.
 
+To compare SVG rendering implementations, use **Artwork renderer** in the widget settings. **KDE SVG** preserves the existing behavior; **Qt Quick Image (experimental)** preserves the separate local Image-based renderer. Only the selected renderer is instantiated.
+
 ## How it works
 
 - Native KSystemStats sensors track RAM use (`memory/physical/usedPercent`) or aggregate VRAM use (`gpu/all/usedPercent`).
