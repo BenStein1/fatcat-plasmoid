@@ -28,15 +28,15 @@ Kirigami.OverlaySheet {
             filterCaseSensitivity: Qt.CaseInsensitive
         }
 
-        QQC2.ListView {
+        ListView {
             id: list
             Layout.fillWidth: true
             Layout.fillHeight: true
             model: proxy
             delegate: QQC2.ItemDelegate {
                 width: list.width
-                text: model.display
-                secondaryText: model.sensorId
+                // ItemDelegate has no secondaryText property.
+                text: model.display + "\n" + model.sensorId
                 onClicked: {
                     if (sheet.targetField) sheet.targetField.text = model.sensorId;
                     sheet.close();
