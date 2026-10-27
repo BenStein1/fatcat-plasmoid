@@ -13,6 +13,9 @@ PlasmoidItem {
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
     property string metric: plasmoid.configuration.metric || "systemRam"
+    // Keep KSvg as the default. Choose Qt Quick Image in widget settings
+    // to compare the locally developed rendering path without changing code.
+    property string renderer: plasmoid.configuration.renderer || "ksvg"
 
     property real minScale: 1.0
     property real maxScale: 2.0
@@ -26,46 +29,107 @@ PlasmoidItem {
     property int closedBlinkMs: 140
     property bool eyesOpen: true
 
-    KSvg.Svg {
-        id: bottomArt
-        imagePath: Qt.resolvedUrl("../images/fatcat-bottom.svg").toString()
-    }
+    // Exactly one rendering backend is loaded at a time. The images and SVG
+    // resources belonging to the inactive backend are not instantiated.
+    Component {
+        id: ksvgRenderer
 
-    KSvg.Svg {
-        id: bodyArt
-        imagePath: Qt.resolvedUrl("../images/fatcat-body.svg").toString()
-    }
+        Item {
+        KSvg.Svg {
+            id: bottomArt
+            imagePath: Qt.resolvedUrl("../images/fatcat-bottom.svg").toString()
+        }
 
-    KSvg.Svg {
-        id: topOpen
-        imagePath: Qt.resolvedUrl("../images/fatcat-top-eyes-open.svg").toString()
-    }
+        KSvg.Svg {
+            id: bodyArt
+            imagePath: Qt.resolvedUrl("../images/fatcat-body.svg").toString()
+        }
 
-    KSvg.Svg {
-        id: topClosed
-        imagePath: Qt.resolvedUrl("../images/fatcat-top-eyes-closed.svg").toString()
-    }
+        KSvg.Svg {
+            id: topOpen
+            imagePath: Qt.resolvedUrl("../images/fatcat-top-eyes-open.svg").toString()
+        }
 
-    KSvg.SvgItem {
-        anchors.fill: parent
-        svg: bottomArt
-    }
+        KSvg.Svg {
+            id: topClosed
+            imagePath: Qt.resolvedUrl("../images/fatcat-top-eyes-closed.svg").toString()
+        }
 
-    KSvg.SvgItem {
-        id: body
-        anchors.fill: parent
-        svg: bodyArt
-        transform: Scale {
-            origin.x: growFromCenter ? body.width / 2 : 0
-            origin.y: body.height / 2
-            xScale: root.minScale + root.effFrac * (root.maxScale - root.minScale)
-            yScale: 1
+        KSvg.SvgItem {
+            anchors.fill: parent
+            svg: bottomArt
+        }
+
+        KSvg.SvgItem {
+            id: body
+            anchors.fill: parent
+            svg: bodyArt
+            transform: Scale {
+                origin.x: root.growFromCenter ? body.width / 2 : 0
+                origin.y: body.height / 2
+                xScale: root.minScale + root.effFrac * (root.maxScale - root.minScale)
+                yScale: 1
+            }
+        }
+
+        KSvg.SvgItem {
+            anchors.fill: parent
+            svg: root.eyesOpen ? topOpen : topClosed
+        }
+
         }
     }
 
-    KSvg.SvgItem {
+    // Original local rendering experiment (preserved for side-by-side tests).
+    // Qt Quick handles all three layered SVG images using Image elements.
+    Component {
+        id: imageRenderer
+
+        Item {
+            Image {
+                id: bottomLayer
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                source: Qt.resolvedUrl("../images/fatcat-bottom.svg")
+                sourceSize.width: Math.max(1, Math.round(width))
+                sourceSize.height: Math.max(1, Math.round(height))
+            }
+
+            Image {
+                id: body
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                source: Qt.resolvedUrl("../images/fatcat-body.svg")
+                sourceSize.width: Math.max(1, Math.round(width))
+                sourceSize.height: Math.max(1, Math.round(height))
+                transform: Scale {
+                    origin.x: root.growFromCenter ? body.width / 2 : 0
+                    origin.y: body.height / 2
+                    xScale: root.minScale + root.effFrac * (root.maxScale - root.minScale)
+                    yScale: 1
+                }
+            }
+
+            Image {
+                id: topLayer
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                source: root.eyesOpen
+                    ? Qt.resolvedUrl("../images/fatcat-top-eyes-open.svg")
+                    : Qt.resolvedUrl("../images/fatcat-top-eyes-closed.svg")
+                sourceSize.width: Math.max(1, Math.round(width))
+                sourceSize.height: Math.max(1, Math.round(height))
+            }
+        }
+    }
+
+    Loader {
+        id: artLoader
         anchors.fill: parent
-        svg: eyesOpen ? topOpen : topClosed
+        sourceComponent: root.renderer === "image" ? imageRenderer : ksvgRenderer
     }
 
     Timer {
