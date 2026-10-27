@@ -35,48 +35,47 @@ PlasmoidItem {
         id: ksvgRenderer
 
         Item {
-        KSvg.Svg {
-            id: bottomArt
-            imagePath: Qt.resolvedUrl("../images/fatcat-bottom.svg").toString()
-        }
-
-        KSvg.Svg {
-            id: bodyArt
-            imagePath: Qt.resolvedUrl("../images/fatcat-body.svg").toString()
-        }
-
-        KSvg.Svg {
-            id: topOpen
-            imagePath: Qt.resolvedUrl("../images/fatcat-top-eyes-open.svg").toString()
-        }
-
-        KSvg.Svg {
-            id: topClosed
-            imagePath: Qt.resolvedUrl("../images/fatcat-top-eyes-closed.svg").toString()
-        }
-
-        KSvg.SvgItem {
-            anchors.fill: parent
-            svg: bottomArt
-        }
-
-        KSvg.SvgItem {
-            id: body
-            anchors.fill: parent
-            svg: bodyArt
-            transform: Scale {
-                origin.x: root.growFromCenter ? body.width / 2 : 0
-                origin.y: body.height / 2
-                xScale: root.minScale + root.effFrac * (root.maxScale - root.minScale)
-                yScale: 1
+            KSvg.Svg {
+                id: bottomArt
+                imagePath: Qt.resolvedUrl("../images/fatcat-bottom.svg").toString()
             }
-        }
 
-        KSvg.SvgItem {
-            anchors.fill: parent
-            svg: root.eyesOpen ? topOpen : topClosed
-        }
+            KSvg.Svg {
+                id: bodyArt
+                imagePath: Qt.resolvedUrl("../images/fatcat-body.svg").toString()
+            }
 
+            KSvg.Svg {
+                id: topOpen
+                imagePath: Qt.resolvedUrl("../images/fatcat-top-eyes-open.svg").toString()
+            }
+
+            KSvg.Svg {
+                id: topClosed
+                imagePath: Qt.resolvedUrl("../images/fatcat-top-eyes-closed.svg").toString()
+            }
+
+            KSvg.SvgItem {
+                anchors.fill: parent
+                svg: bottomArt
+            }
+
+            KSvg.SvgItem {
+                id: body
+                anchors.fill: parent
+                svg: bodyArt
+                transform: Scale {
+                    origin.x: root.growFromCenter ? body.width / 2 : 0
+                    origin.y: body.height / 2
+                    xScale: root.minScale + root.effFrac * (root.maxScale - root.minScale)
+                    yScale: 1
+                }
+            }
+
+            KSvg.SvgItem {
+                anchors.fill: parent
+                svg: root.eyesOpen ? topOpen : topClosed
+            }
         }
     }
 
